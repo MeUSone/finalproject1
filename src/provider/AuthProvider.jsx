@@ -10,7 +10,6 @@ const AuthProvider = (props) => {
   const initstate = {
     email: '',
     password: '',
-    points: 10000,
   }
   const [user, setUser] = useState(initstate)
   const [errors, setErrors] = useState([])

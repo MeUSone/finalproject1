@@ -111,7 +111,7 @@ constructor(props) {
       // Deduct current bet from points
       const points = this.state.points - currentBet;
       this.setState({ points, inputValue: '', currentBet });
-      localStorage.setItem('points',this.state.points);
+      this.writeUserData(this.state.points);
     }
   }
   
@@ -191,7 +191,7 @@ constructor(props) {
           gameOver: true,
           message: 'Dealer bust! You win!'
         });
-        localStorage.setItem('points',this.state.points);
+        this.writeUserData(this.state.points);
       } else {
         const winner = this.getWinner(dealer, this.state.player);
         let points= this.state.points;
@@ -214,7 +214,7 @@ constructor(props) {
           gameOver: true,
           message
         });
-        localStorage.setItem('points',this.state.points);
+        this.writeUserData(this.state.points);
       } 
     } else {
       this.setState({ message: 'Game over! Please start a new game.' });
@@ -250,6 +250,12 @@ constructor(props) {
     const body = document.querySelector('body');
     body.addEventListener('keydown', this.handleKeyDown.bind(this));
   }
+
+  writeUserData(points) {
+    firebase.database().ref('users/' + this.user.uid).set({
+     points:points
+    });
+  }
   
   render() {
     let dealerCount;
@@ -266,6 +272,8 @@ constructor(props) {
         dealerCount = card1;
       }
     }
+
+   
 
     return (
       <div>

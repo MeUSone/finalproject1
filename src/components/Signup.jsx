@@ -5,6 +5,7 @@ import { Button } from '@material-ui/core';
 import { Input } from '@material-ui/core';
 import { Container } from '@material-ui/core';
 import { Grid } from '@material-ui/core';
+import firebase from 'firebase';
 
 const Signup = props => {
   
@@ -20,8 +21,11 @@ const Signup = props => {
     e.preventDefault()
     handleSignup()
     setUser({email: '', password: '',points:user.points})
-    localStorage.setItem('points',user.points);
     localStorage.setItem('User',JSON.stringify(user));
+    var starCountRef = firebase.database().ref('posts/' + user.uid + '/starCount');
+    starCountRef.get('value', (snapshot) => {
+      localStorage.setItem('points',snapshot.child('points'));
+  });
   }
   const handleChange = (e) => {
     const {name, value} = e.target

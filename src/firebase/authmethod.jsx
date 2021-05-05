@@ -8,8 +8,13 @@ export const authMethods = {
     firebase.auth().createUserWithEmailAndPassword(email,password).then( (userCredential) => {
           var user = userCredential.user;
           const token = user.getIdToken();
-          localStorage.setItem('token', token)
-          setToken(window.localStorage.token)
+          localStorage.setItem('token', token);
+          firebase.database().ref('users/' + user.uid).set({
+            email: email,
+            password: password,
+            points: 10000,
+          });
+          setToken(window.localStorage.token);
       })
         .catch(err => {
           console.log(err.message)
@@ -40,7 +45,6 @@ export const authMethods = {
       console.error(err.message)
       handleErrors(err.message)
     })
-  }
-
+  },
   
 }

@@ -4,6 +4,7 @@ import {Link} from 'react-router-dom'
 import {withRouter} from 'react-router-dom'
 import { Button, Grid } from '@material-ui/core';
 import { Input } from '@material-ui/core';
+import firebase from 'firebase'
 
 
 const Signin = props => {
@@ -19,9 +20,13 @@ const Signin = props => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     handleSignin()
-    setUser({email: '', password: '',points:user.points})
-    localStorage.setItem('points',user.points);
+    setUser({email: '', password: ''})
     localStorage.setItem('User',JSON.stringify(user));
+    var starCountRef = firebase.database().ref('posts/' + user.uid + '/starCount');
+    starCountRef.get('value', (snapshot) => {
+      localStorage.setItem('points',snapshot.child('points'));
+  });
+  alert(localStorage.getItem('points'))
   }
   const handleChange = (e) => {
     const {name, value} = e.target
