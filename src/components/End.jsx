@@ -8,8 +8,8 @@ import {Grid} from '@material-ui/core'
 import firebase from 'firebase'
 
 const End = (props) => {
-  const {user,setUser, } = useContext(firebaseAuth)
-  setUser({email: '', password: '',points:localStorage.getItem('points')});
+  //const {user,setUser, } = useContext(firebaseAuth)
+  //setUser({email: '', password: '',points:localStorage.getItem('points')});
   return (
     <div>
       <Grid container spacing={0} direction="column" alignItems="center" style={{ minHeight: '100vh' }}>

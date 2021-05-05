@@ -15,7 +15,6 @@ constructor(props) {
     super(props);
     this.points=localStorage.getItem('points');
     this.user= JSON.parse(localStorage.getItem('User'));
-    alert(this.user.email);
     this.state = {
       deck: [],
       dealer: null,
