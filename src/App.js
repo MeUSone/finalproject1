@@ -5,7 +5,7 @@ import Home from './components/Home'
 import Signup from './components/Signup'
 import Signin from './components/Signin'
 import BlackJack from './components/BlackJack';
-import End from './components/End'
+
 
 
 const App = props => {
@@ -27,7 +27,7 @@ const App = props => {
             ?
               <BlackJack /> 
             : 
-              <Redirect to='/End' />} 
+              <Redirect to='/' />} 
                 />
         <Route path='/login' 
           render={rProps => localStorage.getItem('token') === null 
@@ -46,7 +46,6 @@ const App = props => {
           <Redirect to='/' />}
             />
         <Route exact path="/blackjack" component={BlackJack} />
-        <Route exact path="/End" component={End} />
       </Switch>
   );
 };
