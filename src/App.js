@@ -18,23 +18,16 @@ const App = props => {
         <Route exact path='/' 
           render={ rProps => localStorage.getItem('token') !== null 
             ?
-              <Home /> 
-            : 
-              <Redirect to='/login' />} 
-                />
-        <Route path='/blackjack' 
-          render={ rProps => localStorage.getItem('token') !== null 
-            ?
               <BlackJack /> 
             : 
-              <Redirect to='/' />} 
+              <Redirect to='/login' />} 
                 />
         <Route path='/login' 
           render={rProps => localStorage.getItem('token') === null 
           ?
             <Signin />
           :
-          <Redirect to={{pathname: '/', state:{ User: localStorage.getItem('uid')}}} />
+          <Redirect to='/' />
         } 
             />
         
@@ -45,7 +38,7 @@ const App = props => {
           :
           <Redirect to='/' />}
             />
-        <Route exact path="/blackjack" component={BlackJack} />
+        <Route exact path="/" component={BlackJack} />
       </Switch>
   );
 };

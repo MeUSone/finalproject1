@@ -22,6 +22,7 @@ const Signup = props => {
     handleSignup()
     setUser({email: '', password: '',points:user.points})
     localStorage.setItem('User',JSON.stringify(user));
+    localStorage.setItem('uid',user.uid);
     var starCountRef = firebase.database().ref('posts/' + user.uid + '/starCount');
     starCountRef.get('value', (snapshot) => {
       localStorage.setItem('points',snapshot.child('points'));

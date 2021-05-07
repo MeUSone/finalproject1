@@ -13,10 +13,9 @@ const Home = (props) => {
     <div>
       <Grid container spacing={0} direction="column" alignItems="center" style={{ minHeight: '100vh' }}>
       <h1>Welcome</h1>
-      <h2>You now have {localStorage.getItem('points')}points</h2>
       <Link to={{pathname:"/blackjack",state: { uid: user.uid }}}>Click here to play blackjack!</Link>
       <br></br>
-      <Button onClick={() => authMethods.logout(setToken, handleErrors)}>logout</Button>
+      <Button onClick={() => authMethods.logout(setToken, handleErrors,window.location.reload())}>logout</Button>
       </Grid>
     </div>)
 };

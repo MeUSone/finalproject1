@@ -1,11 +1,8 @@
 import React, { Component, useRef,useState } from 'react';
-import {useContext} from 'react';
-import {firebaseAuth} from '../provider/AuthProvider'
 import {withRouter} from 'react-router-dom'
 import { auth } from 'firebase';
 import firebase from 'firebase';
-import {AuthProvider} from '../provider/AuthProvider'
-
+import GooglePayButton from '@google-pay/button-react';
 
 
 
@@ -13,18 +10,26 @@ class BlackJack extends Component {
 
 constructor(props) {
     super(props);
-    this.points=localStorage.getItem('points');
-    this.user= JSON.parse(localStorage.getItem('User'));
     this.state = {
       deck: [],
       dealer: null,
       player: null,
-      points: this.points,
+      points: 0,
       inputValue: '',
       currentBet: null,
       gameOver: false,
-      message: null
+      message: null,
+      joke:'',
+      background:'',
     };
+    if(firebase.auth().currentUser!=null){
+    localStorage.setItem('uid',firebase.auth().currentUser.uid);}
+    this.uid=localStorage.getItem('uid')
+
+    firebase.database().ref('users/' + this.uid).get().then((snapshot) => {
+      this.setState({points:snapshot.child('points').val()});
+      this.setState({background:snapshot.child('background').val()});
+    });
   }
 
   generateDeck() {
@@ -73,7 +78,7 @@ constructor(props) {
           message: null
         });
       } else {
-        this.setState({ message: 'Game over! You are broke! Please start a new game.' });
+        this.setState({ message: 'Game over! Click to add 10000 points' });
       }
     } else {
       const deck = this.generateDeck();
@@ -100,18 +105,15 @@ constructor(props) {
     return { randomCard, updatedDeck };
   }
   
-  placeBet() {
+  placepoints() {
     const currentBet = this.state.inputValue;
 
     if (currentBet > this.state.points) {
-      this.setState({ message: 'Insufficient funds to bet that amount.' });
-    } else if (currentBet % 1 !== 0) {
-      this.setState({ message: 'Please bet whole numbers only.' });
+      this.setState({ message: 'Not enough points' });
     } else {
-      // Deduct current bet from points
       const points = this.state.points - currentBet;
       this.setState({ points, inputValue: '', currentBet });
-      this.writeUserData(this.state.points);
+      this.writeUserData(points);
     }
   }
   
@@ -132,7 +134,7 @@ constructor(props) {
         this.setState({ message: 'Please place bet.' });
       }
     } else {
-      this.setState({ message: 'Game over! Please start a new game.' });
+      this.setState({ message: 'Game over! Start a new game.' });
     }
   }
   
@@ -191,7 +193,7 @@ constructor(props) {
           gameOver: true,
           message: 'Dealer bust! You win!'
         });
-        this.writeUserData(this.state.points);
+        this.writeUserData(this.state.points + this.state.currentBet * 2);
       } else {
         const winner = this.getWinner(dealer, this.state.player);
         let points= this.state.points;
@@ -214,7 +216,7 @@ constructor(props) {
           gameOver: true,
           message
         });
-        this.writeUserData(this.state.points);
+        this.writeUserData(points);
       } 
     } else {
       this.setState({ message: 'Game over! Please start a new game.' });
@@ -241,7 +243,7 @@ constructor(props) {
     console.log(e.keyCode);
     
     if (e.keyCode === enter) {
-      this.placeBet();
+      this.placepoints();
     }
   }
   
@@ -251,13 +253,81 @@ constructor(props) {
     body.addEventListener('keydown', this.handleKeyDown.bind(this));
   }
 
-  writeUserData(points) {
-    firebase.database().ref('users/' + this.user.uid).set({
-     points:points
+  writeUserData(p) {
+    firebase.database().ref('users/' +this.uid).update({
+      points: p,
     });
   }
+
+  writeUserBackground() {
+    firebase.database().ref('users/' +this.uid).update({
+      background: this.state.background,
+    });
+  }
+  getCuratedPhotos = async () => {
+    const res = await fetch(
+      `https://api.pexels.com/v1/curated`,
+      {
+        headers: {
+          Authorization: '563492ad6f9170000100000136192ba9abb74806b058703428b5381d',
+        },
+      }
+    );
+    const responseJson = await res.json();
+    //this.backgroundColor=responseJson.photos[Math.floor(Math.random() * 16)].src.large;
+    let x=responseJson.photos[Math.floor(Math.random() * 12)].src.large;
+    this.setState({background:x});
+    console.log(this.state.background);
+    return x;
+  };
   
+generateJoke = async () => {
+  {
+    fetch("https://icanhazdadjoke.com/", {
+      method: "GET",
+      headers: {
+        Accept: "application/json" // Get JSON data
+      }
+    })
+      .then(response => response.json())
+      .then(json => {
+        this.setState({joke:json.joke});
+      });
+  }
+  }
+  paymentRequest = {
+    apiVersion: 2,
+    apiVersionMinor: 0,
+    allowedPaymentMethods: [
+      {
+        type: "CARD",
+        parameters: {
+          allowedAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"],
+          allowedCardNetworks: ["MASTERCARD", "VISA"]
+        },
+        tokenizationSpecification: {
+          type: "PAYMENT_GATEWAY",
+          parameters: {
+            gateway: "example"
+          }
+        }
+      }
+    ],
+    merchantInfo: {
+      merchantId: "BCR2DN6TV735H73B",
+      merchantName: "Demo Merchant"
+    },
+    transactionInfo: {
+      totalPriceStatus: "FINAL",
+      totalPriceLabel: "Total",
+      totalPrice: "100.00",
+      currencyCode: "USD",
+      countryCode: "US"
+    }
+  };
+
   render() {
+    
     let dealerCount;
     const card1 = this.state.dealer.cards[0].number;
     const card2 = this.state.dealer.cards[1].number;
@@ -272,21 +342,32 @@ constructor(props) {
         dealerCount = card1;
       }
     }
-
-   
-
+  
     return (
-      <div>
+      <div style={{
+        backgroundImage: `url(${this.state.background})`,
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        width: '100vw',
+        height: '100vh'
+      }}>
+      <div style={{
+        backgroundColor:"white",
+      }}>
         <div className="buttons">
           <button onClick={() => {this.startNewGame()}}>New Game</button>
-          <button onClick={() => {firebase.auth().signOut().then( res => {
-            localStorage.removeItem('token');
-            window.onload();
-    })}}>logout</button>
           <button onClick={() => {this.hit()}}>Hit</button>
           <button onClick={() => {this.stand()}}>Stand</button>
+          <button onClick={() => {firebase.auth().signOut().then( res => {
+            localStorage.clear();
+            window.location.reload();
+          })}}>logout</button>
+          <button onClick={() => {this.getCuratedPhotos()}}>Change random background</button>
+          <button onClick={() => {this.writeUserBackground()}}>Save background</button>
+          <button onClick={() => {this.generateJoke()}}>Joke</button>
         </div>
-        
+          <p>{this.state.joke}</p>
         <p>Points: ${ this.state.points }</p>
         {
           !this.state.currentBet ? 
@@ -294,7 +375,7 @@ constructor(props) {
             <form>
               <input type="text" name="bet" placeholder="" value={this.state.inputValue} onChange={this.inputChange.bind(this)}/>
             </form>
-            <button onClick={() => {this.placeBet()}}>Place Bet</button>
+            <button onClick={() => {this.placepoints()}}>Place points</button>
           </div>
           : null
         }
@@ -303,7 +384,9 @@ constructor(props) {
           <div className="buttons">
             <button onClick={() => {this.startNewGame('continue')}}>Continue</button>
           </div>
-          : null
+          : <div className="buttons">
+          <button onClick={() => {this.setState({points:this.state.points+10000}); this.writeUserData(this.state.points+10000)}}>Click to add 10000 points</button>
+        </div>
         }
         <p>Your Hand ({ this.state.player.count })</p>
         <table className="cards">
@@ -324,6 +407,11 @@ constructor(props) {
         </table>
         
         <p>{ this.state.message }</p>
+        <div>
+         <GooglePayButton paymentRequest={this.paymentRequest} onLoadPaymentData={paymentRequest => { console.log("load payment data", paymentRequest);}}/>
+          <h1>Click to donate!</h1>
+      </div>
+      </div>
       </div>
     );
   }

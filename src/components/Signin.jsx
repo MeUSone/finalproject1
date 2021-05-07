@@ -21,12 +21,6 @@ const Signin = props => {
     e.preventDefault()
     handleSignin()
     setUser({email: '', password: ''})
-    localStorage.setItem('User',JSON.stringify(user));
-    var starCountRef = firebase.database().ref('posts/' + user.uid + '/starCount');
-    starCountRef.get('value', (snapshot) => {
-      localStorage.setItem('points',snapshot.child('points'));
-  });
-  alert(localStorage.getItem('points'))
   }
   const handleChange = (e) => {
     const {name, value} = e.target
