@@ -357,12 +357,12 @@ class BlackJack extends Component {
     }
   };
   const Poker = ({ number, suit }) => {
-    const color = (suit == '♦' || suit == '♥') ? "text-danger" : "text-dark";
-    
+    var color = (suit == '♦' || suit == '♥') ? "text-danger" : "text-dark";
+    var color1=color+" card-body align-items-center d-flex justify-content-center"
     return (
       <Card style={{width: "100px",height: "150px"}}>
-      <Card.Title>{number}{suit}</Card.Title>
-      <Card.Text class="card-body align-items-center d-flex justify-content-center">{number}{suit}</Card.Text>
+      <Card.Title class={color}>{number}{suit}</Card.Title>
+      <Card.Text class={color1}>{number}{suit}</Card.Text>
       </Card>
     );
   };
