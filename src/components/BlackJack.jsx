@@ -346,10 +346,13 @@ class BlackJack extends Component {
             }) }
         </container>
           <p>{ this.state.message }</p>
-          </div>
+         </div>
           <div>
+          <p>If you win, you get twice the bet points. If it is a tie,</p> 
+          <p>you do not lose any points. If you lose, you lose the </p>
+          <p>bet points.</p>
            <GooglePayButton paymentRequest={this.paymentRequest} onLoadPaymentData={paymentRequest => { console.log("load payment data", paymentRequest);}}/>
-            <h1>Click to donate!</h1>
+            <h3>Click to donate!</h3>
         </div>
         </div>
         </div>
