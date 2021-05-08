@@ -159,8 +159,10 @@ class BlackJack extends Component {
               points += this.state.currentBet * 2;
               message='You win!';
             } else {
-              points += this.state.currentBet;
+              console.log(points+ " 1")
+              points += this.state.currentBet*1;
               message = 'Tie';
+              console.log(points)
             } 
             this.setState({
               deck, 
@@ -295,7 +297,7 @@ class BlackJack extends Component {
         }}>
         <div style={{
           backgroundColor:"white",
-          height:"95%",
+          height:"100%",
           width:"80%"
         }}  class="container">
           <div style={{display: 'flex',justifyContent:'center', alignItems:'center'}}>

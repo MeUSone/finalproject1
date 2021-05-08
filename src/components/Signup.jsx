@@ -35,7 +35,7 @@ const Signup = props => {
   }
   return (
     <Grid container spacing={0} direction="column" alignItems="center" style={{ minHeight: '100vh' }}>
-      <h1>Welcome to blackJack game</h1>
+      <h1>Welcome to BlackJack game</h1>
       <br></br>
         <Grid item xs={3} onSubmit={handleSubmit}>
               <Input placeholder="email" onChange={handleChange} name='email' value={user.email}  />
