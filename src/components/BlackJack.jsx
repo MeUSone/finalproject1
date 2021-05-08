@@ -242,16 +242,14 @@ class BlackJack extends Component {
     
   generateJoke = async () => {
     {
-      fetch("https://icanhazdadjoke.com/", {
+      const res = await fetch("https://icanhazdadjoke.com/", {
         method: "GET",
         headers: {
           Accept: "application/json"
         }
       })
-        .then(response => response.json())
-        .then(json => {
-          this.setState({joke:json.joke});
-        });
+      const responseJson = await res.json();
+        this.setState({joke:responseJson.joke});
     }
   }
   paymentRequest = {
