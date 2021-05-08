@@ -15,7 +15,7 @@ const AuthProvider = (props) => {
   const [errors, setErrors] = useState([])
   const [token, setToken] = useState(null)
 
-  console.log('errors',errors)
+  //console.log('errors',errors)
 
   const handleErrors = (arg) => {
     const filterErrors = new Set([...errors, arg])

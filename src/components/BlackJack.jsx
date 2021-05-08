@@ -105,7 +105,6 @@ class BlackJack extends Component {
   dealerDraw(dealer,deck){
       const {randomCard,updateDeck}=this.getRandomCard(deck);
       dealer.cards.push(randomCard);
-      console.log(randomCard+ " dealer cards")
       dealer.sum=this.getSum(dealer.cards);
       return {dealer,updateDeck};
   }
@@ -136,7 +135,6 @@ class BlackJack extends Component {
           this.state.dealer.cards.push(randomCard.randomCard);
           this.state.dealer.sum=this.getSum(this.state.dealer.cards);
           while(this.state.dealer.sum< 17) {
-            console.log(deck+ " deck1")
             const newDraw = this.dealerDraw(this.state.dealer,deck);
             this.state.dealer=newDraw.dealer;
             deck=newDraw.updateDeck;
@@ -159,10 +157,8 @@ class BlackJack extends Component {
               points += this.state.currentBet * 2;
               message='You win!';
             } else {
-              console.log(points+ " 1")
               points += this.state.currentBet*1;
               message = 'Tie';
-              console.log(points)
             } 
             this.setState({
               deck, 
@@ -193,7 +189,9 @@ class BlackJack extends Component {
   placePoints() {
       if (this.state.inputValue>this.state.points) {
         this.setState({message:'No enough points' });
-      } else {
+      } else if (this.state.inputValue*1!=this.state.inputValue){
+        this.setState({message:'Please place number'})
+      }else {
         const points = this.state.points - this.state.inputValue;
         this.setState({ points, inputValue: '', currentBet:this.state.inputValue});
         this.writeUserData(points);

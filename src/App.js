@@ -10,7 +10,6 @@ import BlackJack from './components/BlackJack';
 
 const App = props => {
   const {token} = useContext(firebaseAuth)
-  console.log(localStorage.getItem('token'))
 
   
   return (

@@ -18,7 +18,7 @@ export const authMethods = {
           setToken(window.localStorage.token);
       })
         .catch(err => {
-          console.log(err.message)
+          //console.log(err.message)
           handleErrors(err.message)
         })
   },
@@ -43,7 +43,7 @@ export const authMethods = {
         setToken(null)
     })
     .catch(err => {
-      console.error(err.message)
+      //console.error(err.message)
       handleErrors(err.message)
     })
   }
