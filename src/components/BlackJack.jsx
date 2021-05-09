@@ -189,8 +189,8 @@ class BlackJack extends Component {
   placePoints() {
       if (this.state.inputValue>this.state.points) {
         this.setState({message:'No enough points' });
-      } else if (this.state.inputValue*1!=this.state.inputValue){
-        this.setState({message:'Please place number'})
+      } else if (this.state.inputValue*1!=this.state.inputValue||this.state.inputValue<=0){
+        this.setState({message:'Please place positive number'})
       }else {
         const points = this.state.points - this.state.inputValue;
         this.setState({ points, inputValue: '', currentBet:this.state.inputValue});
@@ -352,7 +352,7 @@ class BlackJack extends Component {
           <p>you do not lose any points. If you lose, you lose the </p>
           <p>bet points.</p>
            <GooglePayButton paymentRequest={this.paymentRequest} onLoadPaymentData={paymentRequest => { console.log("load payment data", paymentRequest);}}/>
-            <h3>Click to donate!</h3>
+            <h6>Click to donate!</h6>
         </div>
         </div>
         </div>
